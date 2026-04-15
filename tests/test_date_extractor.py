@@ -1,5 +1,6 @@
 """Layer 2 tests — filename → date extraction."""
 import datetime as dt
+import pathlib
 import pytest
 from airtel_availability.date_extractor import DateExtractor
 
@@ -25,12 +26,19 @@ CASES = [
     ("2023041299.csv",                       None,                 "mtime"),
     # Invalid month/day must not match
     ("report_20231301.csv",                  None,                 "mtime"),
+    # Multi-date filename: first match wins (documents pattern-order behavior)
+    ("20230412_to_20230413.csv",             dt.date(2023, 4, 12), "filename"),
+    # 19xx-dashed is deliberately NOT supported by v1 seed patterns (see spec §4.2)
+    ("1999-12-31_report.csv",                None,                 "mtime"),
+    # Mixed separator in YMD-dashed is permitted by seed pattern (documents behavior)
+    ("2023-04_12_report.csv",                dt.date(2023, 4, 12), "filename"),
 ]
 
 
 @pytest.fixture(scope="module")
 def extractor():
-    return DateExtractor.from_yaml("config/date_patterns.yaml")
+    root = pathlib.Path(__file__).parent.parent
+    return DateExtractor.from_yaml(root / "config" / "date_patterns.yaml")
 
 
 @pytest.mark.parametrize("basename,expected_date,expected_source", CASES)

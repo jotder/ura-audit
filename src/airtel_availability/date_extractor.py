@@ -26,6 +26,8 @@ class DateExtractor:
     @classmethod
     def from_yaml(cls, path: str | Path) -> "DateExtractor":
         data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or "patterns" not in data:
+            raise ValueError(f"date_patterns YAML at {path} must be a mapping with a 'patterns' key")
         compiled = [re.compile(p["regex"]) for p in data["patterns"]]
         return cls(compiled)
 
