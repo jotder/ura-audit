@@ -17,3 +17,6 @@ __pycache__/
 # Editor
 .idea/
 .vscode/
+
+# Claude Code local config
+.claude/
