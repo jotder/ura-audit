@@ -1,0 +1,19 @@
+# Run outputs — never committed
+out/
+tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Secrets
+.env
+.env.*
+
+# Editor
+.idea/
+.vscode/
