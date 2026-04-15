@@ -1,0 +1,233 @@
+# Source-pattern catalog. Order matters: first-listed entry wins on ambiguous match.
+# Each entry MUST carry >=3 `tests:` cases (positive and negative) — enforced by test_catalog.py.
+
+- key: air_recharge
+  label: "AIR Recharge"
+  patterns:
+    - '(?i)(^|[/_-])rch([_.-]|$)'
+    - '(?i)cbs_cdr_rch_'
+    - '(?i)ocs_rch_'
+    - '(?i)recharge'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_rch_20230412.add",             expect: air_recharge}
+    - {name: "CBS_CDR_RCH_20230412.csv.gz",          expect: air_recharge}
+    - {name: "ocs_rch_20230412.tar.gz",              expect: air_recharge}
+    - {name: "random_report.csv",                    expect: ""}
+
+- key: air_subscription
+  label: "AIR Subscription"
+  patterns:
+    - '(?i)(^|[/_-])sub([_.-]|$)'
+    - '(?i)cbs_cdr_sub_'
+    - '(?i)subscription'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_sub_20230412.add",             expect: air_subscription}
+    - {name: "subscription_20230412.csv",            expect: air_subscription}
+    - {name: "submarine_cable.csv",                  expect: ""}   # 'sub' not at token boundary
+
+- key: air_adjustment
+  label: "AIR Adjustment"
+  patterns:
+    - '(?i)(^|[/_-])adj([_.-]|$)'
+    - '(?i)cbs_cdr_adj_'
+    - '(?i)(^|[/_-])mon([_.-]|$)'          # monetary adjustment CDR
+    - '(?i)adjustment'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_adj_20230412.add",             expect: air_adjustment}
+    - {name: "mon_20230412.csv.gz",                  expect: air_adjustment}
+    - {name: "monday_summary.csv",                   expect: ""}   # 'mon' not at token boundary
+
+- key: me2u_transfer
+  label: "Me2U / Transfer"
+  patterns:
+    - '(?i)me2u'
+    - '(?i)(^|[/_-])trf([_.-]|$)'
+    - '(?i)transfer'
+    - '(?i)cbs_cdr_trf_'
+  path_hints: []
+  tests:
+    - {name: "me2u_20230412.csv",                    expect: me2u_transfer}
+    - {name: "cbs_cdr_trf_20230412.add",             expect: me2u_transfer}
+    - {name: "transfer_log_20230412.csv",            expect: me2u_transfer}
+    - {name: "trfc_report.csv",                      expect: ""}   # 'trf' not at token boundary
+
+- key: sdp
+  label: "SDP"
+  patterns:
+    - '(?i)(^|[/_-])sdp([_.-]|$)'
+    - '(?i)cbs_cdr_sdp_'
+  path_hints: []
+  tests:
+    - {name: "sdp_20230412.csv",                     expect: sdp}
+    - {name: "cbs_cdr_sdp_20230412.add",             expect: sdp}
+    - {name: "nsdp_20230412.csv",                    expect: ""}   # 'sdp' not at token boundary
+
+- key: momo_transactions
+  label: "Mobile Money Transactions"
+  patterns:
+    - '(?i)(^|[/_-])(txn|trans|transactions)([_.-]|$)'
+  path_hints: ["/airtel_mobile_money"]
+  tests:
+    - {name: "txn_20230412.csv",  path: "/airtel_mobile_money/2023/txn_20230412.csv",  expect: momo_transactions}
+    - {name: "transactions_20230412.csv", path: "/airtel_mobile_money/trans/transactions_20230412.csv", expect: momo_transactions}
+    - {name: "txn_20230412.csv",  path: "/master_data1/txn_20230412.csv",              expect: ""}   # path hint fails
+
+- key: momo_balance_snapshot
+  label: "Mobile Money Balance Snapshot"
+  patterns:
+    - '(?i)(^|[/_-])(bal|balance|snapshot|snap)([_.-]|$)'
+  path_hints: ["/airtel_mobile_money"]
+  tests:
+    - {name: "bal_20230412.csv",      path: "/airtel_mobile_money/bal_20230412.csv",      expect: momo_balance_snapshot}
+    - {name: "snapshot_20230412.csv", path: "/airtel_mobile_money/snapshot_20230412.csv", expect: momo_balance_snapshot}
+    - {name: "bal_20230412.csv",      path: "/master_data1/bal_20230412.csv",             expect: ""}
+
+- key: vms_physical
+  label: "VMS Physical"
+  patterns:
+    - '(?i)vou[^/]*phys'
+    - '(?i)physical[^/]*vou'
+    - '(?i)(^|[/_-])pvou([_.-]|$)'
+    - '(?i)vms[_-]?p([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "vou_physical_20230412.csv",            expect: vms_physical}
+    - {name: "physical_vou_20230412.csv",            expect: vms_physical}
+    - {name: "pvou_20230412.csv",                    expect: vms_physical}
+    - {name: "vou_electronic_20230412.csv",          expect: vms_electronic}   # should go to VMS-E, not VMS-P
+
+- key: vms_electronic
+  label: "VMS Electronic"
+  patterns:
+    - '(?i)vou[^/]*elec'
+    - '(?i)(^|[/_-])evou([_.-]|$)'
+    - '(?i)vms[_-]?e([_.-]|$)'
+    - '(?i)cbs_cdr_vou_'
+    - '(?i)(^|[/_-])vou([_.-]|$)'       # generic — last resort for VOU
+  path_hints: []
+  tests:
+    - {name: "vou_electronic_20230412.csv",          expect: vms_electronic}
+    - {name: "cbs_cdr_vou_20230412.add",             expect: vms_electronic}
+    - {name: "evou_20230412.csv",                    expect: vms_electronic}
+    - {name: "voucher_bundle.csv",                   expect: ""}   # 'vou' not at token boundary
+
+- key: dealer_management
+  label: "Dealer Management System"
+  patterns:
+    - '(?i)(^|[/_-])dms([_.-]|$)'
+    - '(?i)dealer'
+  path_hints: []
+  tests:
+    - {name: "dms_20230412.csv",                     expect: dealer_management}
+    - {name: "dealer_report_20230412.csv",           expect: dealer_management}
+    - {name: "admsx_20230412.csv",                   expect: ""}   # 'dms' not at token boundary
+
+- key: bank_momo_float
+  label: "Bank Statement Holding MoMo Float"
+  patterns:
+    - '(?i)(^|[/_-])bank([_.-]|$)'
+    - '(?i)(^|[/_-])(float|stmt|statement)([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "bank_stmt_20230412.csv",               expect: bank_momo_float}
+    - {name: "float_20230412.csv",                   expect: bank_momo_float}
+    - {name: "statement_20230412.csv",               expect: bank_momo_float}
+    - {name: "banking_news.csv",                     expect: ""}
+
+- key: hlr
+  label: "HLR"
+  patterns:
+    - '(?i)(^|[/_-])hlr([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "hlr_20230412.csv",                     expect: hlr}
+    - {name: "HLR_dump_20230412.add",                expect: hlr}
+    - {name: "ahlrx_20230412.csv",                   expect: ""}
+
+- key: in_voice
+  label: "IN Voice"
+  patterns:
+    - '(?i)(^|[/_-])voi([_.-]|$)'
+    - '(?i)cbs_cdr_voi_'
+    - '(?i)ocs[^/]*voi'
+    - '(?i)(^|[/_-])voice([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_voi_20230412.add",             expect: in_voice}
+    - {name: "voi_20230412.csv.gz",                  expect: in_voice}
+    - {name: "voice_cdr_20230412.csv",               expect: in_voice}
+    - {name: "void_list.csv",                        expect: ""}   # 'voi' not at token boundary
+
+- key: in_sms
+  label: "IN SMS"
+  patterns:
+    - '(?i)(^|[/_-])sms([_.-]|$)'
+    - '(?i)cbs_cdr_sms_'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_sms_20230412.add",             expect: in_sms}
+    - {name: "sms_20230412.csv",                     expect: in_sms}
+    - {name: "psms_20230412.csv",                    expect: vas_other}   # should be classified as VAS, not IN SMS
+
+- key: in_gprs
+  label: "IN GPRS"
+  patterns:
+    - '(?i)(^|[/_-])gprs([_.-]|$)'
+    - '(?i)cbs_cdr_gprs_'
+    - '(?i)data_cdr'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_gprs_20230412.add",            expect: in_gprs}
+    - {name: "gprs_20230412.csv.gz",                 expect: in_gprs}
+    - {name: "data_cdr_20230412.csv",                expect: in_gprs}
+    - {name: "gprst_report.csv",                     expect: ""}
+
+- key: vas_other
+  label: "VAS (PSMS, RBT, MMS, etc.)"
+  patterns:
+    - '(?i)(^|[/_-])(psms|rbt|mms|vas)([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "psms_20230412.csv",                    expect: vas_other}
+    - {name: "rbt_20230412.csv",                     expect: vas_other}
+    - {name: "mms_20230412.csv",                     expect: vas_other}
+    - {name: "vas_bundle.csv",                       expect: vas_other}
+
+- key: msc
+  label: "MSC"
+  patterns:
+    - '(?i)(^|[/_-])msc([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "msc_20230412.csv",                     expect: msc}
+    - {name: "msc_dump_20230412.add",                expect: msc}
+    - {name: "amsca_report.csv",                     expect: ""}
+
+- key: postpaid_billing
+  label: "Postpaid Billing / Invoicing"
+  patterns:
+    - '(?i)postpaid[^/]*(inv|bill)'
+    - '(?i)(^|[/_-])pp[^/]*inv'
+    - '(?i)(^|[/_-])invoice([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "postpaid_invoice_20230412.csv",        expect: postpaid_billing}
+    - {name: "postpaid_billing_20230412.csv",        expect: postpaid_billing}
+    - {name: "pp_inv_20230412.csv",                  expect: postpaid_billing}
+    - {name: "invoice_20230412.csv",                 expect: postpaid_billing}
+
+- key: postpaid_payments
+  label: "Postpaid Payments"
+  patterns:
+    - '(?i)postpaid[^/]*pay'
+    - '(?i)(^|[/_-])pp[^/]*pay'
+    - '(?i)(^|[/_-])payment([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "postpaid_payments_20230412.csv",       expect: postpaid_payments}
+    - {name: "pp_pay_20230412.csv",                  expect: postpaid_payments}
+    - {name: "payment_20230412.csv",                 expect: postpaid_payments}
+    - {name: "user_profile.csv",                     expect: ""}
