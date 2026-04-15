@@ -2,8 +2,8 @@
 
 Maps a (basename, full_path) pair to a source_key from a YAML catalog.
 Classification rules (in priority order):
-  1. path_hints must all be substrings of the full path (or the entry's
-     path_hints must be empty) before any pattern is considered.
+  1. If an entry declares path_hints, at least one hint must be a substring
+     of the full path; entries with empty path_hints skip this gate.
   2. Patterns are tried in catalog order. If exactly one entry matches, it wins.
   3. If 2+ entries match, first-listed wins, confidence is downgraded to 'ambiguous'.
   4. If zero entries match, source_key is empty string, confidence 'unknown'.
@@ -49,6 +49,8 @@ class Classifier:
     @classmethod
     def from_yaml(cls, path: str | Path) -> "Classifier":
         raw = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+        if not isinstance(raw, list):
+            raise ValueError(f"catalog YAML at {path} must be a top-level list of entries")
         entries = [
             CatalogEntry(
                 key=e["key"],
