@@ -1,0 +1,17 @@
+- key: momo_transactions
+  label: "Mobile Money Transactions"
+  patterns:
+    - '(?i)(^|[/_-])(txn|trans|transactions)([_.-]|$)'
+  path_hints: ["/airtel_mobile_money"]
+  tests:
+    - {name: "txn_20230412.csv", path: "/airtel_mobile_money/2023/txn_20230412.csv", expect: momo_transactions}
+    - {name: "txn_20230412.csv", path: "/master_data1/txn_20230412.csv", expect: ""}
+
+- key: air_recharge
+  label: "AIR Recharge"
+  patterns:
+    - '(?i)(^|[/_-])rch([_.-]|$)'
+  path_hints: []
+  tests:
+    - {name: "cbs_cdr_rch_20230412.add", expect: air_recharge}
+    - {name: "random_report.csv", expect: ""}
