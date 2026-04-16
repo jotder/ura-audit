@@ -33,7 +33,9 @@ public class CatalogLoader {
             List<Pattern> compiled = patternStrings.stream().map(Pattern::compile).toList();
             List<String> pathHints = (List<String>) map.getOrDefault("path_hints", List.of());
             if (pathHints == null) pathHints = List.of();
-            entries.add(new CatalogEntry(key, label, compiled, Collections.unmodifiableList(pathHints)));
+            Object activeObj = map.getOrDefault("active", Boolean.TRUE);
+            boolean active = activeObj instanceof Boolean b ? b : Boolean.parseBoolean(activeObj.toString());
+            entries.add(new CatalogEntry(key, label, compiled, Collections.unmodifiableList(pathHints), active));
         }
         return Collections.unmodifiableList(entries);
     }

@@ -40,7 +40,8 @@ public class Main {
         List<CatalogEntry> catalog = CatalogLoader.load(config.catalogPath);
         Classifier classifier = new Classifier(catalog);
         DateExtractor dateExtractor = DateExtractor.fromYaml(config.datePatternsPath);
-        System.out.println("Loaded " + catalog.size() + " catalog entries");
+        long activeCount = catalog.stream().filter(CatalogEntry::active).count();
+        System.out.println("Loaded " + catalog.size() + " catalog entries (" + activeCount + " active)");
 
         // Walk roots
         FileWalker walker = new FileWalker();
@@ -65,7 +66,7 @@ public class Main {
                 classified, unclassified,
                 enriched.isEmpty() ? 0 : (classified * 100.0 / enriched.size()));
 
-        // Filter to requested sources
+        // Filter to requested sources (explicit --source) or active sources (default)
         List<EnrichedEntry> filtered = enriched;
         List<String> sourceKeys;
         if (!config.sourceFilter.isEmpty()) {
@@ -74,7 +75,10 @@ public class Main {
                     .toList();
             sourceKeys = config.sourceFilter;
         } else {
-            sourceKeys = catalog.stream().map(CatalogEntry::key).toList();
+            sourceKeys = catalog.stream().filter(CatalogEntry::active).map(CatalogEntry::key).toList();
+            filtered = enriched.stream()
+                    .filter(e -> sourceKeys.contains(e.sourceKey()) || !e.classification().matched())
+                    .toList();
         }
 
         // Create output directory

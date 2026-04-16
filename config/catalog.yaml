@@ -3,6 +3,7 @@
 
 - key: air_recharge
   label: "AIR Recharge"
+  active: false
   patterns:
     - '(?i)(^|[/_-])rch([_.-]|$)'
     - '(?i)cbs_cdr_rch_'
@@ -17,6 +18,7 @@
 
 - key: air_subscription
   label: "AIR Subscription"
+  active: false
   patterns:
     - '(?i)(^|[/_-])sub([_.-]|$)'
     - '(?i)cbs_cdr_sub_'
@@ -29,6 +31,7 @@
 
 - key: air_adjustment
   label: "AIR Adjustment"
+  active: false
   patterns:
     - '(?i)(^|[/_-])adj([_.-]|$)'
     - '(?i)cbs_cdr_adj_'
@@ -42,6 +45,7 @@
 
 - key: me2u_transfer
   label: "Me2U / Transfer"
+  active: false
   patterns:
     - '(?i)me2u'
     - '(?i)(^|[/_-])trf([_.-]|$)'
@@ -56,6 +60,7 @@
 
 - key: sdp
   label: "SDP"
+  active: false
   patterns:
     - '(?i)(^|[/_-])sdp([_.-]|$)'
     - '(?i)cbs_cdr_sdp_'
@@ -67,6 +72,7 @@
 
 - key: momo_transactions
   label: "Mobile Money Transactions"
+  active: true
   patterns:
     - '(?i)(^|[/_-])(txn|trans|transactions)([_.-]|$)'
   path_hints: ["/airtel_mobile_money"]
@@ -77,6 +83,7 @@
 
 - key: momo_balance_snapshot
   label: "Mobile Money Balance Snapshot"
+  active: false
   patterns:
     - '(?i)(^|[/_-])(bal|balance|snapshot|snap)([_.-]|$)'
   path_hints: ["/airtel_mobile_money"]
@@ -87,6 +94,7 @@
 
 - key: vms_physical
   label: "VMS Physical"
+  active: false
   patterns:
     - '(?i)vou[^/]*phys'
     - '(?i)physical[^/]*vou'
@@ -101,6 +109,7 @@
 
 - key: vms_electronic
   label: "VMS Electronic"
+  active: false
   patterns:
     - '(?i)vou[^/]*elec'
     - '(?i)(^|[/_-])evou([_.-]|$)'
@@ -116,6 +125,7 @@
 
 - key: dealer_management
   label: "Dealer Management System"
+  active: false
   patterns:
     - '(?i)(^|[/_-])dms([_.-]|$)'
     - '(?i)dealer'
@@ -127,6 +137,7 @@
 
 - key: bank_momo_float
   label: "Bank Statement Holding MoMo Float"
+  active: false
   patterns:
     - '(?i)(^|[/_-])bank([_.-]|$)'
     - '(?i)(^|[/_-])(float|stmt|statement)([_.-]|$)'
@@ -139,6 +150,7 @@
 
 - key: hlr
   label: "HLR"
+  active: false
   patterns:
     - '(?i)(^|[/_-])hlr([_.-]|$)'
   path_hints: []
@@ -149,6 +161,7 @@
 
 - key: in_voice
   label: "IN Voice"
+  active: false
   patterns:
     - '(?i)(^|[/_-])voi([_.-]|$)'
     - '(?i)cbs_cdr_voi_'
@@ -163,6 +176,7 @@
 
 - key: in_sms
   label: "IN SMS"
+  active: false
   patterns:
     - '(?i)(^|[/_-])sms([_.-]|$)'
     - '(?i)cbs_cdr_sms_'
@@ -174,6 +188,7 @@
 
 - key: in_gprs
   label: "IN GPRS"
+  active: false
   patterns:
     - '(?i)(^|[/_-])gprs([_.-]|$)'
     - '(?i)cbs_cdr_gprs_'
@@ -187,6 +202,7 @@
 
 - key: vas_other
   label: "VAS (PSMS, RBT, MMS, etc.)"
+  active: false
   patterns:
     - '(?i)(^|[/_-])(psms|rbt|mms|vas)([_.-]|$)'
   path_hints: []
@@ -198,6 +214,7 @@
 
 - key: msc
   label: "MSC"
+  active: false
   patterns:
     - '(?i)(^|[/_-])msc([_.-]|$)'
   path_hints: []
@@ -208,6 +225,7 @@
 
 - key: postpaid_billing
   label: "Postpaid Billing / Invoicing"
+  active: false
   patterns:
     - '(?i)postpaid[^/]*(inv|bill)'
     - '(?i)(^|[/_-])pp[^/]*inv'
@@ -221,6 +239,7 @@
 
 - key: postpaid_payments
   label: "Postpaid Payments"
+  active: false
   patterns:
     - '(?i)postpaid[^/]*pay'
     - '(?i)(^|[/_-])pp[^/]*pay'

@@ -7,7 +7,8 @@ public record CatalogEntry(
         String key,
         String label,
         List<Pattern> patterns,
-        List<String> pathHints
+        List<String> pathHints,
+        boolean active
 ) {
     public boolean matches(String fileName, String fullPath) {
         return matches(fileName, fullPath, "");
