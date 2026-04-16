@@ -1,11 +1,39 @@
-# Each pattern has named groups: year, month, day. First match wins.
-# Lookarounds guard against spurious digit runs that include a valid subsequence.
-patterns:
-  - name: ymd_compact
-    regex: '(?<![0-9])(?P<year>20\d{2})(?P<month>0[1-9]|1[0-2])(?P<day>0[1-9]|[12]\d|3[01])(?![0-9])'
-  - name: ymd_dashed
-    regex: '(?<![0-9])(?P<year>20\d{2})[-_](?P<month>0[1-9]|1[0-2])[-_](?P<day>0[1-9]|[12]\d|3[01])(?![0-9])'
-  - name: ymd_19xx
-    regex: '(?<![0-9])(?P<year>19\d{2})(?P<month>0[1-9]|1[0-2])(?P<day>0[1-9]|[12]\d|3[01])(?![0-9])'
-  - name: dmy_dashed
-    regex: '(?<![0-9])(?P<day>0[1-9]|[12]\d|3[01])[-_](?P<month>0[1-9]|1[0-2])[-_](?P<year>(?:19|20)\d{2})(?![0-9])'
+# Date extraction patterns. Order matters: first match wins.
+# Each entry has: name, pattern (Java regex), year_group/month_group/day_group (1-based capture group indices),
+# and embedded test cases.
+
+- name: ymd_compact
+  pattern: '(?<![0-9])(20\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(?![0-9])'
+  year_group: 1
+  month_group: 2
+  day_group: 3
+  tests:
+    - {input: "txn_20230412.csv", date: "2023-04-12"}
+    - {input: "CBS_CDR_RCH_20230101.add", date: "2023-01-01"}
+    - {input: "no_date_here.csv", date: ""}
+
+- name: ymd_dashed
+  pattern: '(?<![0-9])(20\d{2})[-_](0[1-9]|1[0-2])[-_](0[1-9]|[12]\d|3[01])(?![0-9])'
+  year_group: 1
+  month_group: 2
+  day_group: 3
+  tests:
+    - {input: "report_2023-04-12.csv", date: "2023-04-12"}
+    - {input: "report_2023_04_12.csv", date: "2023-04-12"}
+
+- name: ymd_19xx
+  pattern: '(?<![0-9])(19\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(?![0-9])'
+  year_group: 1
+  month_group: 2
+  day_group: 3
+  tests:
+    - {input: "archive_19990101.csv", date: "1999-01-01"}
+
+- name: dmy_dashed
+  pattern: '(?<![0-9])(0[1-9]|[12]\d|3[01])[-_](0[1-9]|1[0-2])[-_](20\d{2})(?![0-9])'
+  year_group: 3
+  month_group: 2
+  day_group: 1
+  tests:
+    - {input: "report_12-04-2023.csv", date: "2023-04-12"}
+    - {input: "report_31-12-2023.csv", date: "2023-12-31"}
