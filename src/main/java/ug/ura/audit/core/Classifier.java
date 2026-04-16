@@ -10,11 +10,15 @@ public class Classifier {
     }
 
     public ClassifyResult classify(String fileName, String fullPath) {
+        return classify(fileName, fullPath, "");
+    }
+
+    public ClassifyResult classify(String fileName, String fullPath, String origin) {
         String normalizedName = stripGzSuffix(fileName);
         CatalogEntry firstMatch = null;
         int matchCount = 0;
         for (CatalogEntry entry : catalog) {
-            if (entry.matches(normalizedName, fullPath)) {
+            if (entry.matches(normalizedName, fullPath, origin)) {
                 if (firstMatch == null) firstMatch = entry;
                 matchCount++;
             }

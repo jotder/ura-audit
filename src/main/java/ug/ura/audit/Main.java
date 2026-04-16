@@ -50,7 +50,7 @@ public class Main {
         // Classify + extract dates
         List<EnrichedEntry> enriched = new ArrayList<>();
         for (FileEntry f : files) {
-            ClassifyResult cr = classifier.classify(f.fileName(), f.path());
+            ClassifyResult cr = classifier.classify(f.fileName(), f.path(), f.origin());
             DateResult dr = dateExtractor.extract(f.fileName());
             if (dr.date() == null && f.mtime() != null) {
                 LocalDate mtimeDate = f.mtime().atOffset(ZoneOffset.UTC).toLocalDate();
