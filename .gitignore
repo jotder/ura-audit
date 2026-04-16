@@ -2,21 +2,27 @@
 out/
 tmp/
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.venv/
-.pytest_cache/
-*.egg-info/
+# Java
+target/
+*.class
+*.jar
+!src/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Secrets
 .env
-.env.*
+*.pem
 
-# Editor
-.idea/
-.vscode/
-
-# Claude Code local config
+# Claude
 .claude/
